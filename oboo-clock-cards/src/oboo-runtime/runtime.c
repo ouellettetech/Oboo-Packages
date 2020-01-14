@@ -59,6 +59,16 @@ const char * module_loader = "Duktape.modSearch = function (id) {  \n\
     throw new Error('module not found: ' + id); \n\
 }";
 
+static void duktape_fatal_handler(void *udata, const char *msg) {
+  (void) udata;  /* ignored in this case, silence warning */
+    /* Note that 'msg' may be NULL. */
+  fprintf(stderr, "*** FATAL ERROR: %s\n", msg ? msg : "no message");
+  fprintf(stderr, "Causing intentional segfault...\n");
+  fflush(stderr);
+  *((volatile unsigned int *) 0) = (unsigned int) 0xdeadbeefUL;
+  abort();
+}
+
 void initRuntime() {
   int status = 0;
   time_t t;
@@ -67,7 +77,7 @@ void initRuntime() {
   srand((unsigned) time(&t));
 
   /* Init Duktape */
-  ctx = duk_create_heap_default();
+  ctx = duk_create_heap(NULL, NULL, NULL, NULL, duktape_fatal_handler);
 
   /* Init Module Loader */
   duk_module_duktape_init(ctx);
