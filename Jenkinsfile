@@ -11,20 +11,27 @@ pipeline {
             steps {
                 // Get some code from a GitHub repository
                 sh "mkdir -p Oboo-Source"
-                dir "Oboo-Source"
-                git 'https://github.com/ouellettetech/Oboo-Source.git'
-                sh "pwd"
-                // Run Maven on a Unix agent.
-                sh "ls"
-                sh "whoami"
-                sh "env"
-                sh "cp -r /lib/sshKeys ."
+                
+                dir("Oboo-Source"){
+                  dir "Oboo-Source"
+                  git 'https://github.com/ouellettetech/Oboo-Source.git'
+                  sh "pwd"
+                  // Run Maven on a Unix agent.
+                  sh "ls"
+                  sh "whoami"
+                  sh "env"
+                  sh "cp -r /lib/sshKeys ."
+                  
+                  def customImage = docker.build("my-image:${env.BUILD_ID}")
+                }
+                
                 sh "mkdir -p output"
-                //sh "mvn -Dmaven.test.failure.ignore=true clean package"
-                sh "docker build . -t oboo && date && docker run -e \"PACKAGE_CHECKOUT=$GIT_COMMIT\" -v `pwd`/output:/root/source/bin oboo"
+                
+                customImage.inside('-e "PACKAGE_CHECKOUT=$GIT_COMMIT" -v `pwd`/output:/root/source/bin $BUILD_TAG') {
+                    sh build.sh
+                }
+
                 sh "du output"
-                // To run Maven on a Windows agent, use
-                // bat "mvn -Dmaven.test.failure.ignore=true clean package"
             }
 
             post {
