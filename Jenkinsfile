@@ -13,7 +13,7 @@ pipeline {
                 sh "mkdir -p Oboo-Source"
                 sh "cd Oboo-Source"
                 git 'https://github.com/ouellettetech/Oboo-Source.git'
-
+                sh "pwd"
                 // Run Maven on a Unix agent.
                 sh "ls"
                 sh "whoami"
