@@ -10,8 +10,8 @@ pipeline {
         stage('Build') {
             steps {
                 // Get some code from a GitHub repository
-                mkdir -p Oboo-Source
-                cd Oboo-Source
+                sh "mkdir -p Oboo-Source"
+                sh "cd Oboo-Source"
                 git 'https://github.com/ouellettetech/Oboo-Source.git'
 
                 // Run Maven on a Unix agent.
