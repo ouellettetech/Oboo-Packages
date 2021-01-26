@@ -11,7 +11,7 @@ pipeline {
             steps {
                 // Get some code from a GitHub repository
                 sh "mkdir -p Oboo-Source"
-                sh "cd Oboo-Source"
+                dir "Oboo-Source"
                 git 'https://github.com/ouellettetech/Oboo-Source.git'
                 sh "pwd"
                 // Run Maven on a Unix agent.
