@@ -10,7 +10,6 @@ node {
         /* Checkout Oboo-Source since that's actually going to do the building...*/
         
         dir("Oboo-Source"){
-            dir "Oboo-Source"
             git 'https://github.com/ouellettetech/Oboo-Source.git'
             sh "pwd"
             sh "ls"
