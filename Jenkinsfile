@@ -21,7 +21,7 @@ pipeline {
                 sh "cp -r /lib/sshKeys ."
                 sh "mkdir -p output"
                 //sh "mvn -Dmaven.test.failure.ignore=true clean package"
-                sh "docker build . -t oboo && date && docker run -e "PACKAGE_CHECKOUT=$GIT_COMMIT" -v `pwd`/output:/root/source/bin oboo"
+                sh "docker build . -t oboo && date && docker run -e \"PACKAGE_CHECKOUT=$GIT_COMMIT\" -v `pwd`/output:/root/source/bin oboo"
                 sh "du output"
                 // To run Maven on a Windows agent, use
                 // bat "mvn -Dmaven.test.failure.ignore=true clean package"
