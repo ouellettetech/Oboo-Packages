@@ -1,5 +1,5 @@
 node {
-    def customImage
+    def customimage
 
     stage('Clone repository') {
         /* Let's make sure we have the repository cloned to our workspace */
@@ -24,7 +24,7 @@ node {
          * docker build on the command line */
 
         dir("Oboo-Source"){
-            customImage = docker.build("my-image:${env.BUILD_ID}")
+            customimage = docker.build("oboo:${env.BUILD_ID}")
         }
     }
 
@@ -33,7 +33,7 @@ node {
          * For this example, we're using a Volkswagen-type approach ;-) */
         
         sh "mkdir -p output"
-        customImage.inside('-e "PACKAGE_CHECKOUT=$GIT_COMMIT" -v `pwd`/output:/root/source/bin $BUILD_TAG') {
+        customimage.inside('-e "PACKAGE_CHECKOUT=$GIT_COMMIT" -v $WORKSPACE/output:/root/source/bin $BUILD_TAG') {
             sh 'build.sh'
         }
     }
