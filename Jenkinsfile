@@ -24,7 +24,7 @@ node {
          * docker build on the command line */
 
         dir("Oboo-Source"){
-            customimage = docker.build("oboo:${env.BUILD_ID}")
+            customimage = docker.build("oboo")
         }
     }
 
