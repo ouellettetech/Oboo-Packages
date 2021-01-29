@@ -24,16 +24,11 @@ node {
          * docker build on the command line */
 
         dir("Oboo-Source"){
-            customimage = docker.build("oboo")
+            customimage = docker.build("oboo-package:${env.BUILD_ID}")
         }
-    }
-
-    stage('Build...') {
-        /* Ideally, we would run a test framework against our image.
-         * For this example, we're using a Volkswagen-type approach ;-) */
         
         sh "mkdir -p output"
-        customimage.inside('-e "PACKAGE_CHECKOUT=$GIT_COMMIT" -v $WORKSPACE/output:/root/source/bin $BUILD_TAG') {
+        customimage.inside {
             sh 'build.sh'
         }
     }
