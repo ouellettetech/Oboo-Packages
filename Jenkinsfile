@@ -30,7 +30,9 @@ node {
         sh "mkdir -p output"
         customimage.inside {
             echo "Before Build...."
-            sh './build.sh'
+            sh "pwd"
+            sh "ls"
+            sh '/root/source/build.sh'
             echo "After Build...."
         }
         sh "echo Outside build..."
