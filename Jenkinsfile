@@ -28,7 +28,7 @@ node {
         }
         
         sh "mkdir -p output"
-        customimage.inside {
+        customimage.inside('-u root:root -e "PACKAGE_CHECKOUT=$GIT_COMMIT" -v $WORKSPACE/output:/root/source/bin')  {
             echo "Before Build...."
             sh "pwd"
             sh "cat /proc/1/cgroup"
