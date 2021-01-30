@@ -31,6 +31,7 @@ node {
         customimage.inside {
             echo "Before Build...."
             sh "pwd"
+            sh "cat /proc/1/cgroup"
             sh "ls"
             sh '/root/source/build.sh'
             echo "After Build...."
