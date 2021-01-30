@@ -33,6 +33,7 @@ node {
             sh "pwd"
             sh "cat /proc/1/cgroup"
             sh "ls"
+            sh "whoami"
             sh '/root/source/build.sh'
             echo "After Build...."
         }
