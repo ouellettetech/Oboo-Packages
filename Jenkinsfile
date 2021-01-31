@@ -35,7 +35,7 @@ node {
             sh "cat /proc/1/cgroup"
             sh "env"
             sh "whoami"
-            sh 'bash /root/source/build.sh'
+            sh 'bash /root/source/jenkinsBuild.sh'
             echo "After Build...."   
         }
         sh "echo Outside build..."
