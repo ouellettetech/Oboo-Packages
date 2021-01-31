@@ -35,6 +35,9 @@ node {
             sh "cat /proc/1/cgroup"
             sh "env"
             sh "whoami"
+            sh "ls -al /"
+            sh "ls -al /root"
+            sh "ls -al /root/source"
             sh 'bash /root/source/jenkinsBuild.sh'
             echo "After Build...."   
         }
