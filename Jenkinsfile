@@ -11,7 +11,9 @@ node {
         
         dir("Oboo-Source"){
             git 'https://github.com/ouellettetech/Oboo-Source.git'
-            sh "git checkout fixbuild || echo Ignore failures"
+            sh "git checkout fixbuild || git checkout master"
+            sh "git fetch"
+            sh "git rebase"
             sh "pwd"
             sh "ls"
             sh "whoami"
@@ -54,18 +56,14 @@ node {
             app.push("latest")
         }
         */
-        success {
-                    //junit '**/target/surefire-reports/TEST-*.xml'
-                    archiveArtifacts 'output/**'
-                }
+        
+        //junit '**/target/surefire-reports/TEST-*.xml'
+        archiveArtifacts 'output/**'
+    }  
+    
+    stage('Cleaning up') { 
+        steps { 
+            sh "docker rmi $registry:$BUILD_NUMBER" 
+        }
     }
-    
-    
-/*    
-        stage('Cleaning up') { 
-            steps { 
-                sh "docker rmi $registry:$BUILD_NUMBER" 
-            }
-        } 
-  */
 }
