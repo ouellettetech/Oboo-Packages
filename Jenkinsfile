@@ -31,14 +31,12 @@ node {
         sh "mkdir -p output"
         customimage.inside('-u root:root -e "PACKAGE_CHECKOUT=$GIT_COMMIT" -v $WORKSPACE/output:/root/source/bin')  {
             echo "Before Build...."
-            dir("/root/source"){
-                sh "pwd"
-                sh "cat /proc/1/cgroup"
-                sh "env"
-                sh "whoami"
-                sh 'bash /root/source/build.sh'
-                echo "After Build...."   
-            }
+            sh "pwd"
+            sh "cat /proc/1/cgroup"
+            sh "env"
+            sh "whoami"
+            sh 'bash /root/source/build.sh'
+            echo "After Build...."   
         }
         sh "echo Outside build..."
     }
