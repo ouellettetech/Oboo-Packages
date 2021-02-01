@@ -62,7 +62,6 @@ node {
     }  
     
     stage('Cleaning up') { 
-        customimage.rm
         sh "docker rmi oboo-package:${env.BUILD_ID}" 
     }
 }
