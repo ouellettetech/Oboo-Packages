@@ -62,6 +62,7 @@ node {
     }  
     
     stage('Cleaning up') { 
-        sh "docker rmi $registry:$BUILD_NUMBER" 
+        customimage.rm
+        sh "docker rmi oboo-package:${env.BUILD_ID}" 
     }
 }
