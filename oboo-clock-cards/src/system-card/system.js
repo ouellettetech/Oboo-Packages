@@ -1,3 +1,4 @@
+// Card for system settings.
 var cardLib = require("card-lib");
 var onRecvMessage = cardLib.onRecvMessage; // is there a cleaner way to do this?
 
@@ -18,29 +19,35 @@ var cardInfo = {
     versions: {
       fw: '0',
       sw: '0'
-    }
+    },
+    networkInfo: {
+      wanIP: '0.0.0.0',
+      localIP: '0.0.0.0',
+    },
+    setupComplete : false
 }
+
+var messageQueue = [];
+
 var notification = {
   active: false,
   duration: 0,
   startTime: 0
 }
-var messageQueue = [];
-
-var setupComplete = false;
 
 // definitions for the program
 var elementId = {
     systemImage: 0,
     versionInfoFw: 1,
     versionInfoSw: 2,
+    networkInfoLoc: 3,
+    networkInfoWan: 4
 };
 
 var cardImg = {
     background: "blank_bg",
     buttons: "blank_buttons",
 };
-
 
 // card functions
 function createCard () {
@@ -68,6 +75,20 @@ function createCard () {
                             15,
                             0, 260, 'left')
                         );
+
+    cardObj.elements.push(cardLib.generateTextElement(
+                          elementId.networkInfoLoc,
+                          'Lan IP: ' + cardInfo.networkInfo.localIP,
+                          15,
+                          0, 215, 'left')
+                      );
+
+    cardObj.elements.push(cardLib.generateTextElement(
+                          elementId.networkInfoWan,
+                          'Wan IP: ' + cardInfo.networkInfo.wanIP,
+                          15,
+                          0, 230, 'left')
+                      );
 
     // init the card
     initCard(JSON.stringify(cardObj));
@@ -147,19 +168,43 @@ function handleButtonInput(e) {
 }
 
 function handleGestureInput(e) {
-  print('Handling gesture input');
-  print(JSON.stringify(e));
-  if (cardInfo.cardCreated) {
-    if (e.direction === 'left' || e.direction === 'right') {
-      print('deleting card!');
-      // delete the card
-      deleteCard(cardInfo.id);
-      // reset the card ID
-      cardInfo.id = -1;
-      cardInfo.cardCreated = false;
-      cardInfo.active = false;
+    print('Handling gesture input');
+    print(JSON.stringify(e));
+    if (cardInfo.cardCreated) {
+      if (e.direction === 'left' || e.direction === 'right') {
+        print('deleting card!');
+        // delete the card
+        deleteCard(cardInfo.id);
+        // reset the card ID
+        cardInfo.id = -1;
+        cardInfo.cardCreated = false;
+        cardInfo.active = false;
+      }
     }
-  }
+}
+
+function getIPAddress(deviceName){
+    var ipAddress = "not available";
+    var result =  popen('ifstatus '+ deviceName);
+    print('got data for ' + deviceName);
+    try {
+        const objResult = JSON.parse(result);
+        print("Checking For IP");
+        if(objResult.hasOwnProperty("ipv4-address")) {
+            print("Has IP4 address...");
+            if(objResult["ipv4-address"].hasOwnProperty(0)) {
+                print("has first IP...");
+                if(objResult["ipv4-address"][0].hasOwnProperty("address")) {
+                    print("Got address.");
+                    ipAddress = objResult["ipv4-address"][0]["address"];
+                    print("returning value: " + ipAddress);
+                }
+            }
+        }
+    } catch(e) {
+        print(e); // error in the above string!
+    }
+    return ipAddress;
 }
 
 // base functions
@@ -168,14 +213,16 @@ function setup() {
     cardInfo.versions.fw = popen('uci get onion.@onion[0].build');
     cardInfo.versions.fw = cardInfo.versions.fw.slice(0,-1);
     cardInfo.versions.sw = popen('opkg list-installed | grep oboo-clock-base | awk \'{printf $3;}\'');
+    cardInfo.networkInfo.wanIP = getIPAddress('wwan');
+    cardInfo.networkInfo.localIP = getIPAddress('wlan');
     print('version data: ' + JSON.stringify(cardInfo.versions));
+    print('network data:' + JSON.stringify(cardInfo.networkInfo));
     // connect to mqtt broker
     connect('localhost', 1883, null, function () {
-          print('Running connect callback');
           subscribe('/cardResponse');
           subscribe('/button');
           subscribe('/gesture');
-          setupComplete = true;
+          cardInfo.setupComplete = true;
           print('setup complete');
       },
       null,
@@ -188,8 +235,7 @@ function setup() {
 }
 
 function loop() {
-    if (!setupComplete) {
-      print('skipping loop');
+    if (!cardInfo.setupComplete) {
       return 0;
     }
 
