@@ -1,3 +1,5 @@
+var cardLib = require("card-lib");
+var onRecvMessage = cardLib.onRecvMessage; // is there a cleaner way to do this?
 var messageQueue = [];
 var bConfigUpdate = false;
 

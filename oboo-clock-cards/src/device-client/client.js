@@ -1,3 +1,6 @@
+var cardLib = require("card-lib");^M
+var onRecvMessage = cardLib.onRecvMessage; // is there a cleaner way to do this?
+
 var clientInfo = {
     state: {},
     stateLocation: '/root/state.json',
