@@ -24,7 +24,7 @@ var cardInfo = {
       wanIP: '0.0.0.0',
       localIP: '0.0.0.0',
     },
-    setupComplete : false
+    setupComplete : false,
 }
 
 var messageQueue = [];
@@ -159,6 +159,15 @@ function handleButtonInput(e) {
               cmd: 'btPair'
             }))
             break;
+          case 9:
+	    print("button 9 pressed should be 1 and 4");
+            if(e.multitouch === true && e.action === 'press') {
+              // Factory Reset
+              setNotification('Reseting software!', 0);
+              print("Running firstboot -y");
+              system('/sbin/firstboot -y');
+              break;
+            }
           default:
             // nothing
             break;
@@ -179,6 +188,12 @@ function handleGestureInput(e) {
         cardInfo.id = -1;
         cardInfo.cardCreated = false;
         cardInfo.active = false;
+      } else {
+        if(e.direction === 'up' || e.direction === 'down') {
+          print('changing system card!');
+          cardInfo.activeCard = (cardInfo.activeCard ++ ) % NUMBER_VIEWS;
+          update_view();
+        }
       }
     }
 }
