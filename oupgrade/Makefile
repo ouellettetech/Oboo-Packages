@@ -22,7 +22,7 @@ PKG_SOURCE_PROTO:=git
 PKG_SOURCE_URL:=https://github.com/OnionIoT/oupgrade.git
 # Pin to a known-good commit so this can't silently break again the way the
 # unpinned clone in the old onion-feed Makefile did. Update deliberately.
-PKG_SOURCE_VERSION:=master
+PKG_SOURCE_VERSION:=fdae852
 PKG_SOURCE_SUBDIR:=$(PKG_NAME)-$(PKG_VERSION)
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_SOURCE_SUBDIR)
